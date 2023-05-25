@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiz Creator</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .question-input {
+            margin-bottom: 10px;
+        }
+        
+        .option-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .option-input input {
+            margin-right: 10px;
+        }
+        
+        .add-question-btn {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+    <script type="text/babel">
+        class QuizCreator extends React.Component { constructor(props) { super(props); this.state = { questions: [{ text: '', options: ['', ''], correctOptionIndex: 0 }] }; } handleQuestionChange = (event, index) => { const questions = [...this.state.questions];
+        questions[index].text = event.target.value; this.setState({ questions }); }; handleOptionChange = (event, questionIndex, optionIndex) => { const questions = [...this.state.questions]; questions[questionIndex].options[optionIndex] = event.target.value;
+        this.setState({ questions }); }; handleAddQuestion = () => { const questions = [...this.state.questions]; questions.push({ text: '', options: ['', ''], correctOptionIndex: 0 }); this.setState({ questions }); }; handleRemoveQuestion = (index) =>
+        { const questions = [...this.state.questions]; questions.splice(index, 1); this.setState({ questions }); }; handleCorrectOptionChange = (event, questionIndex) => { const questions = [...this.state.questions]; questions[questionIndex].correctOptionIndex
+        = parseInt(event.target.value, 10); this.setState({ questions }); }; render() { return (
+        <div className="container">
+            <h2>Create a Quiz</h2>
+            {this.state.questions.map((question, index) => (
+            <div key={index}>
+                <input type="text" className="question-input" placeholder="Question" value={question.text} onChange={(event)=> this.handleQuestionChange(event, index)} /> {question.options.map((option, optionIndex) => (
+                <div className="option-input" key={optionIndex}>
+                    <input type="text" placeholder={`Option ${optionIndex + 1}`} value={option} onChange={(event)=> this.handleOptionChange(event, index, optionIndex)} />
+                    <input type="radio" name={`correctOption_${index}`} checked={question.correctOptionIndex===optionIndex} value={optionIndex} onChange={(event)=> this.handleCorrectOptionChange(event, index)} />
+                </div>
+                ))}
+                <button onClick={()=> this.handleRemoveQuestion(index)}>Remove</button>
+            </div>
+            ))}
+            <button className="add-question-btn" onClick={this.handleAddQuestion}>Add Question</button>
+        </div>
+        ); } } ReactDOM.render(
+
+        <QuizCreator />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
